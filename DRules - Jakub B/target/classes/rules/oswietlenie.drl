@@ -1,0 +1,460 @@
+import com.example.model.Droga;
+
+// Tam gdzie do getWartoscVW nie ma dodawanej
+// żadnej wartości, oznacza, że "dodane jest 0".
+// Kolejne klasy dodajemy analogicznie,
+// do każdej z klas powinno się stworzyć w pliku
+// Droga.java wszystko co jest potrzebne do reguły
+// czyli np. zmienna a do niej getter itd.
+
+rule "Prędkość projektowa lub ograniczenie prędkości - Bardzo wysoka"
+when
+    $droga : Droga(getPredkosc() > 100)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Prędkość projektowa lub ograniczenie prędkości - Wysoki"
+when
+    $droga : Droga(getPredkosc() > 70 && getPredkosc() <= 100)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Prędkość projektowa lub ograniczenie prędkości - Umiarkowany"
+when
+    $droga : Droga(getPredkosc() > 40 && getPredkosc() <= 70)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Prędkość projektowa lub ograniczenie prędkości - Niski"
+when
+    $droga : Droga(getPredkosc() <= 40 && getPredkosc() > 0)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 2);
+end
+
+rule "Natężenie Ruchu - Trasy Wielopasmowe - Wysoki"
+when
+    $droga : Droga(getNatezenieRuchuWP() > 65)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Natężenie Ruchu - Trasy Wielopasmowe - Umiarkowany"
+when
+    $droga : Droga(getNatezenieRuchuWP() > 35 && getNatezenieRuchuWP() <= 65)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Natężenie Ruchu - Trasy Wielopasmowe - Niski"
+when
+    $droga : Droga(getNatezenieRuchuWP() <= 35 && getNatezenieRuchuWP() > 0)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Natężenie Ruchu - Dwupasmówka - Wysoki"
+when
+    $droga : Droga(getNatezenieRuchu() > 45)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Natężenie Ruchu - Dwupasmówka - Umiarkowany"
+when
+    $droga : Droga(getNatezenieRuchu() > 15 && getNatezenieRuchu() <= 45)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Natężenie Ruchu - Dwupasmówka - Niski"
+when
+    $droga : Droga(getNatezenieRuchu() < 15 && getNatezenieRuchu() > 0)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Skład ruchu - Mieszane z dużym odsetkiem osób niezmotoryzowanych"
+when
+    $droga : Droga(getSkladRuchu() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Skład ruchu - Mieszany"
+when
+    $droga : Droga(getSkladRuchu() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Skład ruchu - Tylko zmotoryzowany"
+when
+    $droga : Droga(getSkladRuchu() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Wydzielnie Tak"
+when
+    $droga : Droga(getWydzielenieJezdni() == "tak")
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Wydzielnie Nie"
+when
+    $droga : Droga(getWydzielenieJezdni() == "nie")
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Gęstość Połączeń - Wysoki"
+when
+    $droga : Droga(getGestoscPolaczen() > 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Gęstość Połączeń - Umiarkowany"
+when
+    $droga : Droga(getGestoscPolaczen() <= 3 && getGestoscPolaczen() > 0)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Gęstość Połączeń - W - Wysoki"
+when
+    $droga : Droga(getWezly_mosty() < 3 && getWezly_mosty() > 0)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Gęstość Połączeń - W - Umiarkowany"
+when
+    $droga : Droga(getWezly_mosty() >= 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Zaparkowane Pojazdy - Obecny"
+when
+    $droga : Droga(getZaparkowanePojazdy() == "tak")
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Zaparkowane Pojazdy - Nieobecny"
+when
+    $droga : Droga(getZaparkowanePojazdy() == "nie")
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Jasność Otoczenia - Wysoki"
+when
+    $droga : Droga(getJasnoscOtoczenia() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Jasność Otoczenia - Umiarkowany"
+when
+    $droga : Droga(getJasnoscOtoczenia() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Jasność Otoczenia - Niski"
+when
+    $droga : Droga(getJasnoscOtoczenia() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Zadanie Nawigacyjne - Bardzo Trudne"
+when
+    $droga : Droga(getZadanieNawigacyjne() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Zadanie Nawigacyjne - Trudny"
+when
+    $droga : Droga(getZadanieNawigacyjne() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Zadanie Nawigacyjne - Łatwy"
+when
+    $droga : Droga(getZadanieNawigacyjne() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+
+
+rule "Obszar Konfliktu - Prędkość projektowa lub ograniczenie prędkości - Bardzo wysoka"
+when
+    $droga : Droga(getK_predkosc() > 100)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 3);
+end
+
+rule "Obszar Konfliktu - Prędkość projektowa lub ograniczenie prędkości - Wysoki"
+when
+    $droga : Droga(getK_predkosc() > 70 && getK_predkosc() <= 100)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Obszar Konfliktu - Prędkość projektowa lub ograniczenie prędkości - Umiarkowany"
+when
+    $droga : Droga(getK_predkosc() > 40 && getK_predkosc() <= 70)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar Konfliktu - Prędkość projektowa lub ograniczenie prędkości - Niski"
+when
+    $droga : Droga(getK_predkosc() <= 40 && getK_predkosc() > 0)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Obszar Konfliktu - Natężenie Ruchu - Wysoki"
+when
+    $droga : Droga(getK_natezenieRuchu() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar Konfliktu - Natężenie Ruchu - Umiarkowany"
+when
+    $droga : Droga(getK_natezenieRuchu() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar Konfliktu - Natężenie Ruchu - Niski"
+when
+    $droga : Droga(getK_natezenieRuchu() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Obszar Konfliktu - Skład ruchu - Mieszane z dużym odsetkiem osób niezmotoryzowanych"
+when
+    $droga : Droga(getK_skladRuchu() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Obszar Konfliktu - Skład ruchu - Mieszany"
+when
+    $droga : Droga(getK_skladRuchu() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar Konfliktu - Skład ruchu - Tylko zmotoryzowany"
+when
+    $droga : Droga(getK_skladRuchu() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar Konfliktu - Wydzielnie Jezdni - Tak"
+when
+    $droga : Droga(getK_wydzielenieJezdni() == "tak")
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar Konfliktu - Wydzielnie Jezdni - Nie"
+when
+    $droga : Droga(getK_wydzielenieJezdni() == "nie")
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar Konfliktu - Zaparkowane Pojazdy - Obecny"
+when
+    $droga : Droga(getK_zaparkowanePojazdy() == "tak")
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar Konfliktu - Zaparkowane Pojazdy - Nieobecny"
+when
+    $droga : Droga(getK_zaparkowanePojazdy() == "nie")
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar Konfliktu - Jasność Otoczenia - Wysoki"
+when
+    $droga : Droga(getK_jasnoscOtoczenia() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar Konfliktu - Jasność Otoczenia - Umiarkowany"
+when
+    $droga : Droga(getK_jasnoscOtoczenia() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar Konfliktu - Jasność Otoczenia - Niski"
+when
+    $droga : Droga(getK_jasnoscOtoczenia() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Obszar Konfliktu - Zadanie Nawigacyjne - Bardzo Trudne"
+when
+    $droga : Droga(getK_zadanieNawigacyjne() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Obszar Konfliktu - Zadanie Nawigacyjne - Trudny"
+when
+    $droga : Droga(getK_zadanieNawigacyjne() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar Konfliktu - Zadanie Nawigacyjne - Łatwy"
+when
+    $droga : Droga(getK_zadanieNawigacyjne() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+
+
+rule "Obszar niskiej prędkości - Szybkość Podróży - Niski"
+when
+    $droga : Droga(getP_predkosc() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar niskiej prędkości - Szybkość Podróży - Bardzo Niska"
+when
+    $droga : Droga(getP_predkosc() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar niskiej prędkości - Użyj Intensywności - Zajęty"
+when
+    $droga : Droga(getP_inten() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar niskiej prędkości - Użyj Intensywności - Normalna"
+when
+    $droga : Droga(getP_inten() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar niskiej prędkości - Użyj Intensywności - Cichy"
+when
+    $droga : Droga(getP_inten() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Obszar niskiej prędkości - Skład Ruchu - Wszyscy"
+when
+    $droga : Droga(getP_skladRuchu() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 2);
+end
+
+rule "Obszar niskiej prędkości - Skład Ruchu - Ruch pieszy i zmotoryzowany"
+when
+    $droga : Droga(getP_skladRuchu() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar niskiej prędkości - Skład Ruchu - Piesi i Rowerzyści"
+when
+    $droga : Droga(getP_skladRuchu() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar niskiej prędkości - Skład Ruchu - Piesi"
+when
+    $droga : Droga(getP_skladRuchu() == 4)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar niskiej prędkości - Skład Ruchu - Rowerzyści"
+when
+    $droga : Droga(getP_skladRuchu() == 5)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar niskiej prędkości - Zaparkowane Pojazdy - Obecny"
+when
+    $droga : Droga(getP_zaparkowanePojazdy() == "tak")
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar niskiej prędkości - Zaparkowane Pojazdy - Nieobecny"
+when
+    $droga : Droga(getP_zaparkowanePojazdy() == "nie")
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar niskiej prędkości - Jasność Otoczenia - Wysoki"
+when
+    $droga : Droga(getP_jasnoscOtoczenia() == 1)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() + 1);
+end
+
+rule "Obszar niskiej prędkości - Jasność Otoczenia - Umiarkowany"
+when
+    $droga : Droga(getP_jasnoscOtoczenia() == 2)
+then
+    $droga.setWartoscVW($droga.getWartoscVW());
+end
+
+rule "Obszar niskiej prędkości - Jasność Otoczenia - Niski"
+when
+    $droga : Droga(getP_jasnoscOtoczenia() == 3)
+then
+    $droga.setWartoscVW($droga.getWartoscVW() - 1);
+end
+
+rule "Obszar niskiej prędkości - Rozpoznawanie twarzy - Potrzebne"
+when
+    $droga : Droga(getP_rozpoz() == "tak")
+then
+    System.out.println("Rozpoznawanie twarzy zostało uwzględnione.");
+end
+
+rule "Obszar niskiej prędkości - Rozpoznawanie twarzy - Niepotrzebne"
+when
+    $droga : Droga(getP_rozpoz() == "nie")
+then
+    System.out.println("Rozpoznawanie twarzy nie zostało uwzględnione.");
+end
